@@ -34,18 +34,13 @@ class TicTacToe
   ## controller ##
   ################
 
-  def play
-    decide_player
-    self.turn_num += 1
-  end
-
   def main
     puts "Let's play Tic-Tac-Toe!"
     while self.turn_num < 5
-      play
+      update_board
     end
     while 5 <= self.turn_num && self.turn_num < 10
-      play
+      update_board
       check_for_winner
     end
   end
@@ -80,22 +75,13 @@ class TicTacToe
     user_turn? ? "X" : "O"
   end
 
-  def decide_player
-    user_turn? ? user_turn : computer_turn
-  end
-
   ###############
   ## user turn ##
   ###############
 
   def user_turn
-    print_board
     print "Enter number of where you would like to play: "
     self.selected_num = gets.chomp.strip
-    update_board
-  end
-
-  def get_user_position
     visual_board.each do |row|
       if row.include?(selected_num)
         return position = [visual_board.index(row), row.index(selected_num)]
@@ -104,7 +90,11 @@ class TicTacToe
   end
 
   def update_board
-    row, column = get_user_position
+    if user_turn?
+      row, column = user_turn
+    else
+      row, column = computer_turn
+    end
     visual_board[row][column] = get_placeholder
     hidden_board[row][column] = 1
   end
@@ -122,7 +112,13 @@ class TicTacToe
   ###################
 
   def computer_turn
-    puts "computer takes turn"
+    row = rand(0..2)
+    column = rand(0..2)
+    while hidden_board[row][column] == 1
+      row = rand(0..2)
+      column = rand(0..2)
+    end
+    return [row, column]
   end
 
   ######################
@@ -137,7 +133,7 @@ class TicTacToe
         message = "I"
       end
       puts "#{message} won." 
-      self.turn_num = 100
+      self.turn_num = 10 # will exit while loop
     end
   end
 
