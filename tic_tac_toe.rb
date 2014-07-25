@@ -63,9 +63,9 @@ class TicTacToe
     print "\n"
   end
 
-  ##################################
-  ## shared b/t user and computer ##
-  ##################################
+  ###############
+  ## reference ##
+  ###############
 
   def user_turn?
     turn_num % 2 == 0 ? false : true
@@ -75,41 +75,19 @@ class TicTacToe
     user_turn? ? "X" : "O"
   end
 
-  ###############
-  ## user turn ##
-  ###############
+  ##################
+  ## update board ##
+  ##################
 
   def user_turn
     print "Enter number of where you would like to play: "
     self.selected_num = gets.chomp.strip
     visual_board.each do |row|
       if row.include?(selected_num)
-        return position = [visual_board.index(row), row.index(selected_num)]
+        return [visual_board.index(row), row.index(selected_num)]
       end
     end
   end
-
-  def update_board
-    if user_turn?
-      row, column = user_turn
-    else
-      row, column = computer_turn
-    end
-    visual_board[row][column] = get_placeholder
-    hidden_board[row][column] = 1
-  end
-
-  def get_placeholder
-    placeholder = "O"
-    if turn_num % 2 == 0
-      placeholder = "X"
-    end
-    placeholder
-  end
-
-  ###################
-  ## computer turn ##
-  ###################
 
   def computer_turn
     row = rand(0..2)
@@ -119,6 +97,20 @@ class TicTacToe
       column = rand(0..2)
     end
     return [row, column]
+  end
+
+  def update_board
+    if user_turn?
+      row, column = user_turn
+    else
+      row, column = computer_turn
+    end
+    visual_board[row][column] = placeholder
+    hidden_board[row][column] = 1
+  end
+
+  def placeholder
+    user_turn? ? "O" : "X"
   end
 
   ######################
