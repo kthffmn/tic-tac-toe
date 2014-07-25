@@ -36,12 +36,15 @@ class TicTacToe
 
   def main
     puts "Let's play Tic-Tac-Toe!"
+    print_board
     while self.turn_num < 5
       update_board
+      self.turn_num += 1
     end
     while 5 <= self.turn_num && self.turn_num < 10
       update_board
       check_for_winner
+      self.turn_num += 1
     end
   end
 
@@ -71,13 +74,27 @@ class TicTacToe
     turn_num % 2 == 0 ? false : true
   end
 
-  def get_placeholder
-    user_turn? ? "X" : "O"
+  def placeholder
+    user_turn? ? "O" : "X"
   end
 
+  def number
+    user_turn? ? 1 : -1
+  end
   ##################
   ## update board ##
   ##################
+
+  def update_board
+    if user_turn?
+      row, column = user_turn
+    else
+      row, column = computer_turn
+    end
+    visual_board[row][column] = placeholder
+    hidden_board[row][column] = number
+    print_board
+  end
 
   def user_turn
     print "Enter number of where you would like to play: "
@@ -90,6 +107,7 @@ class TicTacToe
   end
 
   def computer_turn
+    puts "My turn!"
     row = rand(0..2)
     column = rand(0..2)
     while hidden_board[row][column] == 1
@@ -99,30 +117,15 @@ class TicTacToe
     return [row, column]
   end
 
-  def update_board
-    if user_turn?
-      row, column = user_turn
-    else
-      row, column = computer_turn
-    end
-    visual_board[row][column] = placeholder
-    hidden_board[row][column] = 1
-  end
-
-  def placeholder
-    user_turn? ? "O" : "X"
-  end
-
   ######################
   ## check for winner ##
   ######################
 
   def check_for_winner
     if diagonal_winner? || horizontal_winner? || vertical_winner?
-      print_board
-      message = "Congratuations! You"
+      message = "I"
       if user_turn?
-        message = "I"
+        message = "Congratuations! You"
       end
       puts "#{message} won." 
       self.turn_num = 10 # will exit while loop
@@ -131,7 +134,9 @@ class TicTacToe
 
   def diagonal_winner?
     middle = hidden_board[1][1]
-    if hidden_board[0][0] + middle + hidden_board[2][2] == 3 || hidden_board[0][2] + middle + hidden_board[2][0] == 3
+    first_diag = hidden_board[0][0] + middle + hidden_board[2][2]
+    second_diag = hidden_board[0][2] + middle + hidden_board[2][0] 
+    if first_diag == 3 || second_diag == 3 || first_diag == -3 || second_diag == -3
       return true
     end
   end
@@ -139,7 +144,8 @@ class TicTacToe
   def horizontal_winner?
     row = 0
     while row < 3
-      if hidden_board[row][0] + hidden_board[row][1] + hidden_board[row][2] == 3
+      total = hidden_board[row][0] + hidden_board[row][1] + hidden_board[row][2] 
+      if total == 3 || total == -3
         return true
       end
       row += 1
@@ -149,7 +155,8 @@ class TicTacToe
   def vertical_winner?
     column = 0
     while column < 3
-      if hidden_board[0][column] + hidden_board[1][column] + hidden_board[2][column] == 3
+      total = hidden_board[0][column] + hidden_board[1][column] + hidden_board[2][column] == 3
+      if total == 3 || total == -3
         return true
       end
       column += 1
