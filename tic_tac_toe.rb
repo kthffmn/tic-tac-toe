@@ -131,7 +131,6 @@ class TicTacToe
 
   def check_for_winner
     if diagonal_winner? || horizontal_winner? || vertical_winner?
-      binding.pry
       print_board
       message = "Congratuations! You"
       if user_turn?
