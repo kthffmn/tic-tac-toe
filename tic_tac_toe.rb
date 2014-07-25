@@ -85,7 +85,11 @@ class TicTacToe
   ##################
 
   def update_board
-    user_turn? ? row, column = users_turn : row, column = computers_turn
+    if user_turn?
+      row, column = users_turn
+    else 
+      row, column = computers_turn
+    end
     visual_board[row][column] = placeholder
     hidden_board[row][column] = number
     print_board
@@ -105,7 +109,7 @@ class TicTacToe
     puts "My turn!"
     row = rand(0..2)
     column = rand(0..2)
-    while hidden_board[row][column] == 1
+    while hidden_board[row][column] == 1 || hidden_board[row][column] == -1
       row = rand(0..2)
       column = rand(0..2)
     end
