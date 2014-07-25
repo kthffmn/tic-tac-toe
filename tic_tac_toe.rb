@@ -80,6 +80,7 @@ class TicTacToe
   def number
     user_turn? ? 1 : -1
   end
+  
   ##################
   ## update board ##
   ##################
