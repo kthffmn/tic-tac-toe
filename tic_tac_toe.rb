@@ -2,7 +2,7 @@ require "pry"
 
 class TicTacToe
 
-  attr_accessor :visual_board, :turn_num, :hidden_board, :selected_num
+  attr_accessor :visual_board, :turn_num, :hidden_board
 
   #######################
   ## initalize methods ##
@@ -12,7 +12,6 @@ class TicTacToe
     @visual_board = make_board
     @hidden_board = Array.new(3) { Array.new(3, 0) }
     @turn_num = 1
-    @selected_num = "no space selected yet"
   end
 
   def make_board
@@ -86,19 +85,15 @@ class TicTacToe
   ##################
 
   def update_board
-    if user_turn?
-      row, column = user_turn
-    else
-      row, column = computer_turn
-    end
+    user_turn? ? row, column = users_turn : row, column = computers_turn
     visual_board[row][column] = placeholder
     hidden_board[row][column] = number
     print_board
   end
 
-  def user_turn
-    print "Enter number of where you would like to play: "
-    self.selected_num = gets.chomp.strip
+  def users_turn
+    print "Enter number: "
+    selected_num = gets.chomp.strip
     visual_board.each do |row|
       if row.include?(selected_num)
         return [visual_board.index(row), row.index(selected_num)]
@@ -106,7 +101,7 @@ class TicTacToe
     end
   end
 
-  def computer_turn
+  def computers_turn
     puts "My turn!"
     row = rand(0..2)
     column = rand(0..2)
