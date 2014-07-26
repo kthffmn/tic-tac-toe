@@ -44,6 +44,11 @@ class TicTacToe
       update_board
       check_for_winner
       self.turn_num += 1
+      if turn_num == 10
+        puts "Tie game."
+        print "\n"
+        break
+      end
     end
   end
 
@@ -107,7 +112,7 @@ class TicTacToe
   end
 
   def computers_turn
-    puts "My turn!"
+    puts "Here's my move:"
     row = rand(0..2)
     column = rand(0..2)
     while hidden_board[row][column] == 1 || hidden_board[row][column] == -1
