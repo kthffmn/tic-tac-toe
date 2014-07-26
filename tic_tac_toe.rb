@@ -153,20 +153,22 @@ class TicTacToe
     return nil
   end
 
-  def corners
-    [[0,2], [0,0], [2,0], [2,2]]
-  end
-
-  def center
-    [1, 1]
+  def corners(free_spaces)
+    corners = [[0,2], [0,0], [2,0], [2,2]]
+    corners.each do |corner| 
+      if free_spaces.include?(corner)
+        return corner
+      end
+    end
+    return nil
   end
 
   def computers_turn
     puts "Here's my move:"
     free_spaces = get_free_spaces
     next_move ||= try_to_win_then_be_defensive(free_spaces)
-    corners.each {|c| next_move ||= c if free_spaces.include?(c)}
-    next_move ||= center
+    next_move ||= corners(free_spaces)
+    next_move ||= [1, 1]
     next_move ||= free_spaces.sample
     return next_move
   end
@@ -186,6 +188,7 @@ class TicTacToe
         message = "Congratuations! You"
       end
       puts "#{message} won." 
+      print "\n"
       self.turn_num = 10 # will exit while loop
     end
   end
