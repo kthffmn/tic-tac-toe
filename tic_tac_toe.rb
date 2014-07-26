@@ -167,8 +167,8 @@ class TicTacToe
     puts "Here's my move:"
     free_spaces = get_free_spaces
     next_move ||= try_to_win_then_be_defensive(free_spaces)
+    next_move ||= [1, 1] if free_spaces.include?([1, 1])
     next_move ||= corners(free_spaces)
-    next_move ||= [1, 1]
     next_move ||= free_spaces.sample
     return next_move
   end
