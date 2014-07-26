@@ -109,17 +109,26 @@ class TicTacToe
         return [visual_board.index(row), row.index(selected_num)]
       end
     end
+    print "Please enter a valid number. "
+    users_turn
   end
+
+  # def computers_turn
+  #   puts "Here's my move:"
+  #   row = rand(0..2)
+  #   column = rand(0..2)
+  #   while hidden_board[row][column] == 1 || hidden_board[row][column] == -1
+  #     row = rand(0..2)
+  #     column = rand(0..2)
+  #   end
+  #   return [row, column]
+  # end
 
   def computers_turn
     puts "Here's my move:"
-    row = rand(0..2)
-    column = rand(0..2)
-    while hidden_board[row][column] == 1 || hidden_board[row][column] == -1
-      row = rand(0..2)
-      column = rand(0..2)
-    end
-    return [row, column]
+    try_to_win
+    be_defensive
+    optimize_location
   end
 
   ######################
