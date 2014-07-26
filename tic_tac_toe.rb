@@ -140,12 +140,15 @@ class TicTacToe
   def try_to_win_then_be_defensive(free_spaces)
     num = -1
     2.times do 
-      hidden_board_copy = hidden_board
+      hidden_board_copy = hidden_board.clone
       free_spaces.each do |coordinates|
-        hidden_board_copy[coordinates[0]][coordinates[1]] == num
+        row, column = coordinates
+        original_value = hidden_board_copy[row][column]
+        hidden_board_copy[row][column] == num
         if winner?(hidden_board_copy)
           return coordinates
         end
+        hidden_board_copy[row][column] = original_value
       end
       num = 1
     end
@@ -157,7 +160,6 @@ class TicTacToe
     free_spaces = get_free_spaces
     next_move ||= try_to_win_then_be_defensive(free_spaces)
     next_move ||= free_spaces.sample
-    binding.pry
     return next_move
   end
 
@@ -166,11 +168,7 @@ class TicTacToe
   ######################
 
   def winner?(board)
-    if diagonal_winner?(board) || horizontal_winner?(board) || vertical_winner?(board)
-      return true
-    else
-      return false
-    end
+    return diagonal_winner?(board) || horizontal_winner?(board) || vertical_winner?(board)
   end
 
   def check_for_winner
@@ -188,31 +186,31 @@ class TicTacToe
     middle = board[1][1]
     first_diag = board[0][0] + middle + board[2][2]
     second_diag = board[0][2] + middle + board[2][0] 
-    if first_diag == 3 || second_diag == 3 || first_diag == -3 || second_diag == -3
-      return true
-    end
+    return first_diag.abs == 3 || second_diag.abs == 3
   end
 
   def horizontal_winner?(board)
     row = 0
     while row < 3
       total = board[row][0] + board[row][1] + board[row][2] 
-      if total == 3 || total == -3
+      if total.abs == 3
         return true
       end
       row += 1
     end
+    return false
   end
 
   def vertical_winner?(board)
     column = 0
     while column < 3
       total = board[0][column] + board[1][column] + board[2][column]
-      if total == 3 || total == -3
+      if total.abs == 3
         return true
       end
       column += 1
     end
+    return false
   end
 end
 
