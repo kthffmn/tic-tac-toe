@@ -75,15 +75,27 @@ class TicTacToe
   ###############
 
   def user_turn?
-    turn_num % 2 == 0 ? false : true
+    if turn_num % 2 == 0
+      return false
+    else
+      return true
+    end
   end
 
   def placeholder
-    user_turn? ? "O" : "X"
+    if user_turn?
+      return "O"
+    else 
+      return "X"
+    end
   end
 
   def number
-    user_turn? ? 1 : -1
+    if user_turn?
+      return 1
+    else
+      return -1
+    end
   end
 
   ##################
@@ -146,7 +158,7 @@ class TicTacToe
     end
     return nil
   end
-  
+
   def computers_turn
     puts "Here's my move:"
     free_spaces = get_free_spaces
@@ -154,6 +166,8 @@ class TicTacToe
     next_move ||= try_to_win(free_spaces)
     next_move ||= be_defensive(free_spaces)
     next_move ||= free_spaces.sample
+    binding.pry
+    return next_move
   end
 
   ######################
