@@ -137,24 +137,17 @@ class TicTacToe
     spaces
   end
 
-  def try_to_win(free_spaces)
-    hidden_board_copy = hidden_board
-    free_spaces.each do |coordinates|
-      hidden_board_copy[coordinates[0]][coordinates[1]] == -1
-      if winner?(hidden_board_copy)
-        return coordinates
+  def try_to_win_then_be_defensive(free_spaces)
+    num = -1
+    2.times do 
+      hidden_board_copy = hidden_board
+      free_spaces.each do |coordinates|
+        hidden_board_copy[coordinates[0]][coordinates[1]] == num
+        if winner?(hidden_board_copy)
+          return coordinates
+        end
       end
-    end
-    return nil
-  end
-
-  def be_defensive(free_spaces)
-    hidden_board_copy = hidden_board
-    free_spaces.each do |coordinates|
-      hidden_board_copy[coordinates[0]][coordinates[1]] == 1
-      if winner?(hidden_board_copy)
-        return coordinates
-      end
+      num = 1
     end
     return nil
   end
@@ -162,9 +155,7 @@ class TicTacToe
   def computers_turn
     puts "Here's my move:"
     free_spaces = get_free_spaces
-    next_move = nil
-    next_move ||= try_to_win(free_spaces)
-    next_move ||= be_defensive(free_spaces)
+    next_move ||= try_to_win_then_be_defensive(free_spaces)
     next_move ||= free_spaces.sample
     binding.pry
     return next_move
