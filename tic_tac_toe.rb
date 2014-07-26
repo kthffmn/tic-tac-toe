@@ -113,30 +113,63 @@ class TicTacToe
     users_turn
   end
 
-  # def computers_turn
-  #   puts "Here's my move:"
-  #   row = rand(0..2)
-  #   column = rand(0..2)
-  #   while hidden_board[row][column] == 1 || hidden_board[row][column] == -1
-  #     row = rand(0..2)
-  #     column = rand(0..2)
-  #   end
-  #   return [row, column]
-  # end
+  def get_free_spaces
+    spaces = []
+    hidden_board.each do |row|
+      row.each do |space|
+        if space == 0
+          spaces << [hidden_board.index(row), row.index(space)]
+        end
+      end
+    end
+    spaces
+  end
 
+  def try_to_win(free_spaces)
+    hidden_board_copy = hidden_board
+    free_spaces.each do |coordinates|
+      hidden_board_copy[coordinates[0]][coordinates[1]] == -1
+      if winner?(hidden_board_copy)
+        return coordinates
+      end
+    end
+    return nil
+  end
+
+  def be_defensive(free_spaces)
+    hidden_board_copy = hidden_board
+    free_spaces.each do |coordinates|
+      hidden_board_copy[coordinates[0]][coordinates[1]] == 1
+      if winner?(hidden_board_copy)
+        return coordinates
+      end
+    end
+    return nil
+  end
+  
   def computers_turn
     puts "Here's my move:"
-    try_to_win
-    be_defensive
-    optimize_location
+    free_spaces = get_free_spaces
+    next_move = nil
+    next_move ||= try_to_win(free_spaces)
+    next_move ||= be_defensive(free_spaces)
+    next_move ||= free_spaces.sample
   end
 
   ######################
   ## check for winner ##
   ######################
 
+  def winner?(board)
+    if diagonal_winner?(board) || horizontal_winner?(board) || vertical_winner?(board)
+      return true
+    else
+      return false
+    end
+  end
+
   def check_for_winner
-    if diagonal_winner? || horizontal_winner? || vertical_winner?
+    if winner?(hidden_board)
       message = "I"
       if user_turn?
         message = "Congratuations! You"
@@ -146,19 +179,19 @@ class TicTacToe
     end
   end
 
-  def diagonal_winner?
-    middle = hidden_board[1][1]
-    first_diag = hidden_board[0][0] + middle + hidden_board[2][2]
-    second_diag = hidden_board[0][2] + middle + hidden_board[2][0] 
+  def diagonal_winner?(board)
+    middle = board[1][1]
+    first_diag = board[0][0] + middle + board[2][2]
+    second_diag = board[0][2] + middle + board[2][0] 
     if first_diag == 3 || second_diag == 3 || first_diag == -3 || second_diag == -3
       return true
     end
   end
 
-  def horizontal_winner?
+  def horizontal_winner?(board)
     row = 0
     while row < 3
-      total = hidden_board[row][0] + hidden_board[row][1] + hidden_board[row][2] 
+      total = board[row][0] + board[row][1] + board[row][2] 
       if total == 3 || total == -3
         return true
       end
@@ -166,10 +199,10 @@ class TicTacToe
     end
   end
 
-  def vertical_winner?
+  def vertical_winner?(board)
     column = 0
     while column < 3
-      total = hidden_board[0][column] + hidden_board[1][column] + hidden_board[2][column]
+      total = board[0][column] + board[1][column] + board[2][column]
       if total == 3 || total == -3
         return true
       end
