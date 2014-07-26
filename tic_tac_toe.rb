@@ -1,5 +1,3 @@
-require "pry"
-
 class TicTacToe
 
   attr_accessor :visual_board, :turn_num, :hidden_board
@@ -213,6 +211,3 @@ class TicTacToe
     return false
   end
 end
-
-game = TicTacToe.new
-game.main
