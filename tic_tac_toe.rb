@@ -80,7 +80,7 @@ class TicTacToe
   def number
     user_turn? ? 1 : -1
   end
-  
+
   ##################
   ## update board ##
   ##################
@@ -155,7 +155,7 @@ class TicTacToe
   def vertical_winner?
     column = 0
     while column < 3
-      total = hidden_board[0][column] + hidden_board[1][column] + hidden_board[2][column] == 3
+      total = hidden_board[0][column] + hidden_board[1][column] + hidden_board[2][column]
       if total == 3 || total == -3
         return true
       end
