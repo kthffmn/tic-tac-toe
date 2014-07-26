@@ -116,9 +116,9 @@ class TicTacToe
   def users_turn
     print "Enter number: "
     selected_num = gets.chomp.strip
-    visual_board.each do |row|
+    visual_board.each_with_index do |row, row_index|
       if row.include?(selected_num)
-        return [visual_board.index(row), row.index(selected_num)]
+        return [row_index, row.index(selected_num)]
       end
     end
     print "Please enter a valid number. "
@@ -127,10 +127,10 @@ class TicTacToe
 
   def get_free_spaces
     spaces = []
-    hidden_board.each do |row|
-      row.each do |space|
+    hidden_board.each_with_index do |row, row_index|
+      row.each_with_index do |space, column_index|
         if space == 0
-          spaces << [hidden_board.index(row), row.index(space)]
+          spaces << [row_index, column_index]
         end
       end
     end
@@ -144,7 +144,7 @@ class TicTacToe
       free_spaces.each do |coordinates|
         row, column = coordinates
         original_value = hidden_board_copy[row][column]
-        hidden_board_copy[row][column] == num
+        hidden_board_copy[row][column] = num
         if winner?(hidden_board_copy)
           return coordinates
         end
