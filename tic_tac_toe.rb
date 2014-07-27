@@ -1,3 +1,4 @@
+require 'pry'
 class TicTacToe
 
   attr_accessor :visual_board, :turn_num, :hidden_board
@@ -123,9 +124,9 @@ class TicTacToe
     users_turn
   end
 
-  def get_free_spaces
+  def get_free_spaces(board=hidden_board)
     spaces = []
-    hidden_board.each_with_index do |row, row_index|
+    board.each_with_index do |row, row_index|
       row.each_with_index do |space, column_index|
         if space == 0
           spaces << [row_index, column_index]
@@ -135,41 +136,59 @@ class TicTacToe
     spaces
   end
 
-  def try_to_win_then_be_defensive(free_spaces)
-    num = -1
-    2.times do 
-      hidden_board_copy = hidden_board.clone
-      free_spaces.each do |coordinates|
-        row, column = coordinates
-        original_value = hidden_board_copy[row][column]
-        hidden_board_copy[row][column] = num
-        if winner?(hidden_board_copy)
-          return coordinates
-        end
-        hidden_board_copy[row][column] = original_value
-      end
-      num = 1
-    end
-    return nil
-  end
+  # def try_to_win_then_be_defensive(free_spaces)
+  #   num = -1
+  #   2.times do 
+  #     hidden_board_copy = hidden_board.clone
+  #     free_spaces.each do |row, column|
+  #       hidden_board_copy[row][column] = num
+  #       if winner?(hidden_board_copy)
+  #         return [row, column]
+  #       end
+  #       hidden_board_copy[row][column] = 0
+  #     end
+  #     num = 1
+  #   end
+  #   return nil
+  # end
 
-  def corners(free_spaces)
-    corners = [[0,2], [0,0], [2,0], [2,2]]
-    corners.each do |corner| 
-      if free_spaces.include?(corner)
-        return corner
+  # minimax(board, player) returns [winner, [row, column]]
+  # where winner is either player, or 0 if only a tie is possible
+  # and row,column is the best move to make, which will give that outcome.
+  def minimax(board, player)
+    move_winners = []
+    get_free_spaces(board).each do |row, column|
+      board[row][column] = player
+      if winner?(board)
+        winner = player
+        puts winner
+        puts board.inspect
+      elsif get_free_spaces(board).empty?
+        winner = 0 # tie
+        puts winner
+        puts board.inspect
+      else
+        winner, _ = minimax(board, -player)
       end
+      move_winners << [winner, [row, column]]
+      board[row][column] = 0
     end
-    return nil
+
+    if board == hidden_board
+      binding.pry
+    end
+
+    if player == 1
+      return move_winners.max
+    else
+      return move_winners.min
+    end
   end
 
   def computers_turn
     puts "Here's my move:"
     free_spaces = get_free_spaces
-    next_move ||= try_to_win_then_be_defensive(free_spaces)
-    next_move ||= [1, 1] if free_spaces.include?([1, 1])
-    next_move ||= corners(free_spaces)
-    next_move ||= free_spaces.sample
+    _, next_move = minimax(Marshal.load(Marshal.dump(hidden_board)), -1)
     return next_move
   end
 
