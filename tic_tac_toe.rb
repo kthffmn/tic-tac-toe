@@ -11,6 +11,7 @@ class TicTacToe
     @visual_board = make_board
     @hidden_board = Array.new(3) { Array.new(3, 0) }
     @turn_num = 1
+    @counter = 0
   end
 
   def make_board
@@ -51,9 +52,9 @@ class TicTacToe
     end
   end
 
-  def print_board
+  def print_board(board=visual_board)
     print "\n"
-    visual_board.each_with_index do |row, index| 
+    board.each_with_index do |row, index| 
       row.each_with_index do |space, i|
         if i != 1
           print " #{space} "
@@ -136,22 +137,6 @@ class TicTacToe
     spaces
   end
 
-  # def try_to_win_then_be_defensive(free_spaces)
-  #   num = -1
-  #   2.times do 
-  #     hidden_board_copy = hidden_board.clone
-  #     free_spaces.each do |row, column|
-  #       hidden_board_copy[row][column] = num
-  #       if winner?(hidden_board_copy)
-  #         return [row, column]
-  #       end
-  #       hidden_board_copy[row][column] = 0
-  #     end
-  #     num = 1
-  #   end
-  #   return nil
-  # end
-
   # minimax(board, player) returns [winner, [row, column]]
   # where winner is either player, or 0 if only a tie is possible
   # and row,column is the best move to make, which will give that outcome.
@@ -159,23 +144,16 @@ class TicTacToe
     move_winners = []
     get_free_spaces(board).each do |row, column|
       board[row][column] = player
+      @counter += 1
       if winner?(board)
         winner = player
-        puts winner
-        puts board.inspect
       elsif get_free_spaces(board).empty?
         winner = 0 # tie
-        puts winner
-        puts board.inspect
       else
         winner, _ = minimax(board, -player)
       end
       move_winners << [winner, [row, column]]
       board[row][column] = 0
-    end
-
-    if board == hidden_board
-      binding.pry
     end
 
     if player == 1
@@ -186,9 +164,11 @@ class TicTacToe
   end
 
   def computers_turn
-    puts "Here's my move:"
     free_spaces = get_free_spaces
-    _, next_move = minimax(Marshal.load(Marshal.dump(hidden_board)), -1)
+    _, next_move = minimax(hidden_board, -1)
+    formated_counter = @counter.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
+    puts "Analyzed #{formated_counter} board arrangements. Here is my best move:"
+    @counter = 0
     return next_move
   end
 
