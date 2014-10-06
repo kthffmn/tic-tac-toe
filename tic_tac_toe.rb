@@ -1,4 +1,3 @@
-require 'pry'
 class TicTacToe
 
   attr_accessor :visual_board, :turn_num, :hidden_board
@@ -115,13 +114,14 @@ class TicTacToe
 
   def users_turn
     print "Enter number: "
-    selected_num = gets.chomp.strip
+    user_input = gets.chomp.strip
+    exit if user_input.downcase == "exit"
     visual_board.each_with_index do |row, row_index|
-      if row.include?(selected_num)
-        return [row_index, row.index(selected_num)]
+      if row.include?(user_input)
+        return [row_index, row.index(user_input)]
       end
     end
-    print "Please enter a valid number. "
+    print "Please enter a valid number or type 'exit' to stop game. "
     users_turn
   end
 
@@ -139,7 +139,7 @@ class TicTacToe
 
   # minimax(board, player) returns [winner, [row, column]]
   # where winner is either player, or 0 if only a tie is possible
-  # and row,column is the best move to make, which will give that outcome.
+  # and row,column is the best move to make, which will give that outcome
   def minimax(board, player)
     move_winners = []
     get_free_spaces(board).each do |row, column|
